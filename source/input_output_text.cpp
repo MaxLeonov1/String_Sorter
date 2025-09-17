@@ -6,6 +6,7 @@
 #include "input_output_text.h"
 #include "structs.h"
 #include "supporting_functions.h"
+#include "sort_functions.h"
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -67,3 +68,43 @@ StrInfo* ScanOnegin ( FILE* onegin_file, char** text_buffer_point) {
 
 /*-----------------------------------------------------------------------------------------------*/
 
+void PrintOnegin ( StrInfo* str_struct_arr, FILE* output_onegin) {
+
+    for ( int struct_ind = 0;
+          str_struct_arr[struct_ind].str_pointer != nullptr;
+          struct_ind++ ) {
+
+        fprintf( output_onegin, "%s\n", str_struct_arr[struct_ind].str_pointer);
+
+    }
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+void OutputOnegin ( StrInfo* str_struct_arr) {
+
+    FILE* output_onegin = fopen ( "output.txt", "w");
+
+    int (*Comparator) ( const void* str_struct_1,
+                        const void* str_struct_2);
+
+    fprintf( output_onegin, "\n\n[SORTED FROM THE BEGINING]\n\n\n");
+
+    Comparator = LetfToRightStrCompare;
+    str_struct_arr = StructSorting ( str_struct_arr, Comparator);
+    PrintOnegin ( str_struct_arr, output_onegin);
+
+    fprintf( output_onegin, "\n\n[SORTED FROM THE END]\n\n\n");
+
+    Comparator = RightToLeftStrCompare;
+    str_struct_arr = StructSorting ( str_struct_arr, Comparator);
+    PrintOnegin ( str_struct_arr, output_onegin);
+
+    fprintf( output_onegin, "\n\n[ORIGINAL TEXT]\n\n\n");
+
+    Comparator = FenixSort;
+    str_struct_arr = StructSorting ( str_struct_arr, Comparator);
+    PrintOnegin ( str_struct_arr, output_onegin);
+
+}

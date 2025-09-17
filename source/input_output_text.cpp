@@ -10,20 +10,21 @@
 
 /*-----------------------------------------------------------------------------------------------*/
 
-StrInfo* ScanOnegin ( FILE* onegin_file, char** text_buffer_point) {
+StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
 
-    long int   file_char_len  = FileCharCount (onegin_file);
-         int   num_str        = 1;
-         char* str_terminator = nullptr;
-         char* str_pointer    = nullptr;
-         char* text_buffer    = nullptr;
+    FILE*      onegin_file     = fopen ( file_name, "r");
+    all_text->aprox_symbol_num = FileCharCount (onegin_file);
+    int   num_str         = 1;
+    char* str_terminator  = nullptr;
+    char* str_pointer     = nullptr;
+    char* text_buffer     = nullptr;
     
-    *text_buffer_point = (char*) calloc ( file_char_len, sizeof(char)); // \note reduce size by realloc and fread value? 
-    text_buffer = *text_buffer_point;
+    all_text->standart_buffer = (char*) calloc ( all_text->aprox_symbol_num, sizeof(char)); //TODO: calloc cover with testing
 
-    fread( text_buffer, sizeof(char), file_char_len, onegin_file);
+    fread( all_text->standart_buffer, sizeof(char), all_text->aprox_symbol_num, onegin_file);
+    fclose( onegin_file);
 
-    str_pointer = text_buffer;
+    str_pointer = all_text->standart_buffer;
 
     while (1) {
 
@@ -31,7 +32,7 @@ StrInfo* ScanOnegin ( FILE* onegin_file, char** text_buffer_point) {
 
         if ( str_terminator == nullptr) break;
  
-        text_buffer[str_terminator - text_buffer] = 0;
+        all_text->standart_buffer [ str_terminator - all_text->standart_buffer ] = 0;
 
         str_pointer = (char*)(str_terminator + 1);
 
@@ -41,9 +42,9 @@ StrInfo* ScanOnegin ( FILE* onegin_file, char** text_buffer_point) {
 
     // printf("%s\n", text_buffer);
 
-    str_pointer = text_buffer;
+    str_pointer = all_text->standart_buffer;
 
-    StrInfo* str_struct_arr = (StrInfo*) calloc ( num_str + 1, sizeof(StrInfo));
+    all_text->str_info = (StrInfo*) calloc ( num_str + 1, sizeof(StrInfo));
 
     // printf("%d\n", num_str);
 
@@ -51,8 +52,8 @@ StrInfo* ScanOnegin ( FILE* onegin_file, char** text_buffer_point) {
         
         str_terminator = strchr(str_pointer, '\0');
 
-        str_struct_arr[str_ind].str_pointer = str_pointer;
-        str_struct_arr[str_ind].str_len = (str_terminator + 1) - str_pointer;
+        all_text->str_info[str_ind].str_pointer = str_pointer;
+        all_text->str_info[str_ind].str_len = (str_terminator + 1) - str_pointer;
 
         // printf("%p %p\n", str_terminator, str_pointer);
         // printf("%d\n", str_terminator - str_pointer + 1);
@@ -62,7 +63,7 @@ StrInfo* ScanOnegin ( FILE* onegin_file, char** text_buffer_point) {
     }
 
     // printf("%p %p\n", text_buffer, *text_buffer_point);
-    return str_struct_arr;
+    return all_text->str_info;
 
 }
 
@@ -82,29 +83,22 @@ void PrintOnegin ( StrInfo* str_struct_arr, FILE* output_onegin) {
 
 /*-----------------------------------------------------------------------------------------------*/
 
-void OutputOnegin ( StrInfo* str_struct_arr) {
+void OutputOnegin ( Text* all_text) {
 
-    FILE* output_onegin = fopen ( "output.txt", "w");
+    FILE* output_onegin = fopen ( "data/output.txt", "w");
 
     int (*Comparator) ( const void* str_struct_1,
                         const void* str_struct_2);
 
     fprintf( output_onegin, "\n\n[SORTED FROM THE BEGINING]\n\n\n");
-
-    Comparator = LetfToRightStrCompare;
-    str_struct_arr = StructSorting ( str_struct_arr, Comparator);
-    PrintOnegin ( str_struct_arr, output_onegin);
+    PrintOnegin ( all_text->sorted_left, output_onegin);
+    printf ("%s", all_text->sorted_left->str_pointer);
 
     fprintf( output_onegin, "\n\n[SORTED FROM THE END]\n\n\n");
-
-    Comparator = RightToLeftStrCompare;
-    str_struct_arr = StructSorting ( str_struct_arr, Comparator);
-    PrintOnegin ( str_struct_arr, output_onegin);
+    PrintOnegin ( all_text->sorted_right, output_onegin);
+    printf ("%s", all_text->sorted_left->str_pointer);
 
     fprintf( output_onegin, "\n\n[ORIGINAL TEXT]\n\n\n");
-
-    Comparator = FenixSort;
-    str_struct_arr = StructSorting ( str_struct_arr, Comparator);
-    PrintOnegin ( str_struct_arr, output_onegin);
+    PrintOnegin ( all_text->str_info, output_onegin);
 
 }

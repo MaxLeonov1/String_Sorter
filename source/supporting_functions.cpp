@@ -3,6 +3,8 @@
 
 #include "supporting_functions.h"
 #include "colors.h"
+#include "structs.h"
+#include "enum.h"
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -40,5 +42,30 @@ long int FileCharCount ( FILE* stream) {
     fseek ( stream, 0, SEEK_SET);
 
     return file_char_len;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+void StrInfoCopy ( Text* all_text, int copy_type) {
+
+    int struct_ind = 0;
+
+    while ( all_text->str_info[struct_ind].str_pointer != nullptr) {
+
+        switch (copy_type) {
+
+            case LEFT_SORT:
+                all_text->sorted_left[struct_ind].str_pointer = all_text->str_info[struct_ind].str_pointer;
+                
+
+            case RIGHT_SORT:
+                all_text->sorted_left[struct_ind].str_pointer = all_text->str_info[struct_ind].str_pointer;
+
+        }
+
+        struct_ind++;
+
+    }
 
 }

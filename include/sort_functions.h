@@ -4,10 +4,10 @@
 /*-------------------------------------------------------*/
 #include "structs.h"
 /*-------------------------------------------------------*/
+void AllSort ( Text* all_text);
 
 StrInfo* StructSorting ( StrInfo* str_struct_arr, 
-                         int (*Comparator) ( const void* str_struct_1,
-                                             const void* str_struct_2));
+                         int (*Comparator) ( const void* str_struct_1, const void* str_struct_2));
 
 int LetfToRightStrCompare ( const void* arg_1,
                             const void* arg_2);

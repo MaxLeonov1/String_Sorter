@@ -12,44 +12,23 @@
 
 int main ( const int argc, const char* argv[]) {
 
-    char* text_buffer = nullptr;
+    Text all_text;
 
     if (argc >= 2) {
 
         if ((strcmp(argv[1], "--sort") == 0 ||
-             strcmp(argv[1], "-s") == 0)) {
+             strcmp(argv[1], "-s") == 0) &&
+             argc == 3 &&
+             fopen(argv[2], "r") != nullptr) {
 
-            FILE* onegin_file = fopen ( "textonegin.txt", "r");
-            StrInfo* str_pointer_arr = ScanOnegin ( onegin_file, &text_buffer);
-            fclose (onegin_file);
+            all_text.str_info = ScanOnegin ( argv[2], &all_text);
 
-            OutputOnegin ( str_pointer_arr);
+            AllSort ( &all_text);
 
-            free ( str_pointer_arr);
-            free ( text_buffer);
-            //printf("%d\n", str_pointer_arr[14].str_pointer);
-            //printf("%s", text_buffer);
+            OutputOnegin ( &all_text);//TODO: separate sorting and printing
 
-            //printf("%d", StrStructCompare(&str_pointer_arr[0], &str_pointer_arr[1]));
-
-            // int (*Comparator) ( const void* str_struct_1,
-            //                     const void* str_struct_2);
-
-            // //Comparator = LetfToRightStrCompare;
-            // Comparator = RightToLeftStrCompare;
-            // str_pointer_arr = StructSorting ( str_pointer_arr, Comparator);
-
-            // printf ("%s\n%s\n%s\n\n", str_pointer_arr[0].str_pointer,
-            //                           str_pointer_arr[1].str_pointer,
-            //                           str_pointer_arr[2].str_pointer);
-
-
-            // Comparator = FenixSort;
-            // str_pointer_arr = StructSorting ( str_pointer_arr, Comparator);
-
-            // printf ("%s\n%s\n%s\n", str_pointer_arr[0].str_pointer,
-            //                           str_pointer_arr[1].str_pointer,
-            //                           str_pointer_arr[2].str_pointer);
+            free ( all_text.str_info);//TODO: make free func
+            free ( all_text.standart_buffer);
 
         } else if ((strcmp(argv[1], "--test") == 0 ||
                     strcmp(argv[1], "-t") == 0)) {

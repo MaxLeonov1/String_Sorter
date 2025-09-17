@@ -4,8 +4,8 @@
 /*-------------------------------------------------------*/
 #include "structs.h"
 /*-------------------------------------------------------*/
-StrInfo* ScanOnegin   ( FILE* onegin_file, char** text_buffer);
-void     OutputOnegin ( StrInfo* str_struct_arr);
+StrInfo* ScanOnegin   ( const char* file_name, Text* all_text);
+void     OutputOnegin ( Text* all_text);
 void     PrintOnegin  ( StrInfo* str_struct_arr, FILE* output_onegin);
 /*-------------------------------------------------------*/
 

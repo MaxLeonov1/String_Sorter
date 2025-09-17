@@ -4,13 +4,37 @@
 #include <ctype.h>
 
 #include "sort_functions.h"
+#include "supporting_functions.h"
+#include "enum.h"
 #include "structs.h"
 
 /*-----------------------------------------------------------------------------------------------*/
 
-StrInfo* StructSorting ( StrInfo* str_struct_arr, 
-                         int (*Comparator) ( const void* str_struct_1,
-                                             const void* str_struct_2)) {
+void AllSort ( Text* all_text) {
+
+    int (*Comparator) ( const void* str_struct_1,
+                        const void* str_struct_2);
+
+    Comparator = LetfToRightStrCompare;
+    all_text->sorted_left = (StrInfo*) calloc ( all_text->num_str, sizeof(StrInfo));
+    StrInfoCopy ( all_text, LEFT_SORT);
+    qsort ( all_text->sorted_left, all_text->num_str, sizeof(StrInfo), Comparator);
+
+
+    printf("%p\n", all_text->sorted_left);
+
+    Comparator = RightToLeftStrCompare;
+    all_text->sorted_right = (StrInfo*) calloc ( all_text->num_str, sizeof(StrInfo));
+    StrInfoCopy ( all_text, RIGHT_SORT);
+    qsort ( all_text->sorted_right, all_text->num_str, sizeof(StrInfo), Comparator);
+
+    printf("%p\n", all_text->sorted_right);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+StrInfo* StructSorting ( StrInfo* str_struct_arr, int (*Comparator) ( const void* str_struct_1, const void* str_struct_2)) {
 
     int struct_num = 0;
 
@@ -28,7 +52,7 @@ StrInfo* StructSorting ( StrInfo* str_struct_arr,
 
 /*-----------------------------------------------------------------------------------------------*/
 
-int LetfToRightStrCompare ( const void* arg_1,
+int LetfToRightStrCompare ( const void* arg_1, // TODO: assert
                             const void* arg_2) {
 
     const StrInfo* struct_pointer_1 = (const StrInfo*)arg_1;

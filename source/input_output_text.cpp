@@ -21,7 +21,7 @@ StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
     char* str_pointer     = nullptr;
     char* text_buffer     = nullptr;
     
-    all_text->standart_buffer = (char*) CallocWithCheck ( all_text->aprox_symbol_num, sizeof(char)); //TODO: calloc cover with testing
+    all_text->standart_buffer = (char*) CallocWithCheck ( all_text->aprox_symbol_num, sizeof(char));
 
     fread( all_text->standart_buffer, sizeof(char), all_text->aprox_symbol_num, onegin_file);
     fclose( onegin_file);

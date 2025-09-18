@@ -76,7 +76,7 @@ void HandmadeBubleSort ( void *base,
 
 /*-----------------------------------------------------------------------------------------------*/
 
-int LetfToRightStrCompare ( const void* arg_1, // TODO: assert
+int LetfToRightStrCompare ( const void* arg_1,
                             const void* arg_2) {
 
     assert ( (arg_1 != nullptr) && (arg_2 != nullptr));

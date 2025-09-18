@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "supporting_functions.h"
+#include "print_sys_message.h"
 #include "sort_functions.h"
 #include "input_output_text.h"
 #include "structs.h"
@@ -18,22 +19,20 @@ int main ( const int argc, const char* argv[]) {
 
         if ((strcmp(argv[1], "--sort") == 0 ||
              strcmp(argv[1], "-s") == 0) &&
-             argc == 3 &&
-             fopen(argv[2], "r") != nullptr) {
+             argc == 3) {
 
             all_text.str_info = ScanOnegin ( argv[2], &all_text);
 
             AllSort ( &all_text);
 
-            OutputOnegin ( &all_text);//TODO: separate sorting and printing
+            OutputOnegin ( &all_text);
 
-            free ( all_text.str_info);//TODO: make free func
-            free ( all_text.standart_buffer);
+            FreeText ( &all_text);
 
         } else if ((strcmp(argv[1], "--test") == 0 ||
                     strcmp(argv[1], "-t") == 0)) {
 
-            printf("%s[PLACEHOLDER]%s", RED, RES_COL);
+            printf("%s[sorry I have paws, I haven't made test :(]%s", YELLOW, RES_COL);
 
         } else {
 

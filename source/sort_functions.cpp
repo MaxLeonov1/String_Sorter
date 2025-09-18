@@ -2,51 +2,75 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
 
 #include "sort_functions.h"
 #include "supporting_functions.h"
-#include "enum.h"
 #include "structs.h"
 
 /*-----------------------------------------------------------------------------------------------*/
 
 void AllSort ( Text* all_text) {
 
+    assert ( all_text != nullptr);
+
     int (*Comparator) ( const void* str_struct_1,
                         const void* str_struct_2);
 
+    all_text->sorted_left =  (StrInfo*) CallocWithCheck ( all_text->num_str, sizeof(StrInfo));
+    all_text->sorted_right = (StrInfo*) CallocWithCheck ( all_text->num_str, sizeof(StrInfo));
+
+    StrInfoCopy( all_text);
+
     Comparator = LetfToRightStrCompare;
-    all_text->sorted_left = (StrInfo*) calloc ( all_text->num_str, sizeof(StrInfo));
-    StrInfoCopy ( all_text, LEFT_SORT);
     qsort ( all_text->sorted_left, all_text->num_str, sizeof(StrInfo), Comparator);
 
-
-    printf("%p\n", all_text->sorted_left);
-
     Comparator = RightToLeftStrCompare;
-    all_text->sorted_right = (StrInfo*) calloc ( all_text->num_str, sizeof(StrInfo));
-    StrInfoCopy ( all_text, RIGHT_SORT);
-    qsort ( all_text->sorted_right, all_text->num_str, sizeof(StrInfo), Comparator);
-
-    printf("%p\n", all_text->sorted_right);
+    HandmadeBubleSort ( all_text->sorted_right, all_text->num_str, sizeof(StrInfo), Comparator);
 
 }
 
 /*-----------------------------------------------------------------------------------------------*/
 
-StrInfo* StructSorting ( StrInfo* str_struct_arr, int (*Comparator) ( const void* str_struct_1, const void* str_struct_2)) {
+void Swap ( void* element_1, void* element_2, size_t size) {
 
-    int struct_num = 0;
+    assert ( (element_1 != nullptr) && (element_2 != nullptr));
 
-    for ( int struct_ind = 0;
-          str_struct_arr[struct_ind].str_pointer != nullptr;
-          struct_ind++ ) struct_num++;
+    void* mini_buffer = CallocWithCheck ( 1, size);
 
-    // printf("%d", Comparator(&str_struct_arr[0], &str_struct_arr[1]));
+    memcpy ( mini_buffer, element_1, size);
+    memcpy ( element_1, element_2, size);
+    memcpy ( element_2, mini_buffer, size);
 
-    qsort ( str_struct_arr, struct_num, sizeof(StrInfo), Comparator);
+    free ( mini_buffer);
 
-    return str_struct_arr;
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+void HandmadeBubleSort ( void *base,
+                         size_t num,
+                         size_t size,
+                         int (*Comparator) (const void *, const void *)) {
+
+    assert ( (base != nullptr) && (Comparator != nullptr));
+
+    for ( size_t ind_1 = 0; ind_1 < num - 1; ind_1++) {
+
+        for ( size_t ind_2 = 0; ind_2 < ( num - 1) - ind_1; ind_2++) {
+
+            void* element_1 = base + ind_2 * size;
+            void* element_2 = base + (ind_2 + 1) * size;
+
+            if ( Comparator( element_1, element_2) > 0) {
+
+                Swap ( element_1, element_2, size);
+
+            }
+
+        }
+
+    }
 
 }
 
@@ -54,6 +78,8 @@ StrInfo* StructSorting ( StrInfo* str_struct_arr, int (*Comparator) ( const void
 
 int LetfToRightStrCompare ( const void* arg_1, // TODO: assert
                             const void* arg_2) {
+
+    assert ( (arg_1 != nullptr) && (arg_2 != nullptr));
 
     const StrInfo* struct_pointer_1 = (const StrInfo*)arg_1;
     const StrInfo* struct_pointer_2 = (const StrInfo*)arg_2;
@@ -84,6 +110,8 @@ int LetfToRightStrCompare ( const void* arg_1, // TODO: assert
 int FenixSort ( const void* arg_1,
                 const void* arg_2) {
 
+    assert ( (arg_1 != nullptr) && (arg_2 != nullptr));
+
     const StrInfo* struct_pointer_1 = (const StrInfo*)arg_1;
     const StrInfo* struct_pointer_2 = (const StrInfo*)arg_2;
 
@@ -99,11 +127,22 @@ int FenixSort ( const void* arg_1,
 int RightToLeftStrCompare ( const void* arg_1,
                             const void* arg_2) {
 
+    assert ( (arg_1 != nullptr) && (arg_2 != nullptr));
+
     const StrInfo* struct_pointer_1 = (const StrInfo*)arg_1;
     const StrInfo* struct_pointer_2 = (const StrInfo*)arg_2;
 
+    // printf("%s\n", struct_pointer_1->str_pointer);
+    // printf("%s\n", struct_pointer_2->str_pointer);
+
+    // printf("%d\n", struct_pointer_1->str_len);
+    // printf("%d\n", struct_pointer_2->str_len);
+
     char* str_end_1 = (struct_pointer_1->str_pointer + struct_pointer_1->str_len - 2);
     char* str_end_2 = (struct_pointer_2->str_pointer + struct_pointer_2->str_len - 2);
+
+    // printf("%c\n", *str_end_1);
+    // printf("%c\n", *str_end_2);
 
     while ( *str_end_1 || *str_end_2) {
 

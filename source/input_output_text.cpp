@@ -12,14 +12,16 @@
 
 StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
 
-    FILE*      onegin_file     = fopen ( file_name, "r");
-    all_text->aprox_symbol_num = FileCharCount (onegin_file);
+    assert ( (file_name != nullptr) && (all_text != nullptr));
+
+    FILE*      onegin_file     = FopenWithCheck ( file_name, "r");
+    all_text->aprox_symbol_num = FileCharCount ( onegin_file);
     int   num_str         = 1;
     char* str_terminator  = nullptr;
     char* str_pointer     = nullptr;
     char* text_buffer     = nullptr;
     
-    all_text->standart_buffer = (char*) calloc ( all_text->aprox_symbol_num, sizeof(char)); //TODO: calloc cover with testing
+    all_text->standart_buffer = (char*) CallocWithCheck ( all_text->aprox_symbol_num, sizeof(char)); //TODO: calloc cover with testing
 
     fread( all_text->standart_buffer, sizeof(char), all_text->aprox_symbol_num, onegin_file);
     fclose( onegin_file);
@@ -33,20 +35,16 @@ StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
         if ( str_terminator == nullptr) break;
  
         all_text->standart_buffer [ str_terminator - all_text->standart_buffer ] = 0;
-
         str_pointer = (char*)(str_terminator + 1);
 
         num_str++;
 
     }
 
-    // printf("%s\n", text_buffer);
-
+    all_text->num_str = num_str;
     str_pointer = all_text->standart_buffer;
 
-    all_text->str_info = (StrInfo*) calloc ( num_str + 1, sizeof(StrInfo));
-
-    // printf("%d\n", num_str);
+    all_text->str_info = (StrInfo*) CallocWithCheck ( num_str + 1, sizeof(StrInfo));
 
     for (int str_ind = 0; str_ind < num_str; str_ind++) {
         
@@ -69,13 +67,16 @@ StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
 
 /*-----------------------------------------------------------------------------------------------*/
 
-void PrintOnegin ( StrInfo* str_struct_arr, FILE* output_onegin) {
+void PrintOnegin ( StrInfo* struct_arr, FILE* output_onegin, long int num_str) {
+
+    assert ( (struct_arr != nullptr) && (output_onegin != nullptr));
 
     for ( int struct_ind = 0;
-          str_struct_arr[struct_ind].str_pointer != nullptr;
+          struct_ind < num_str;
           struct_ind++ ) {
 
-        fprintf( output_onegin, "%s\n", str_struct_arr[struct_ind].str_pointer);
+        //printf ( "%s\n", struct_arr[struct_ind].str_pointer);
+        fprintf( output_onegin, "%s\n", struct_arr[struct_ind].str_pointer);
 
     }
 
@@ -85,20 +86,17 @@ void PrintOnegin ( StrInfo* str_struct_arr, FILE* output_onegin) {
 
 void OutputOnegin ( Text* all_text) {
 
-    FILE* output_onegin = fopen ( "data/output.txt", "w");
+    assert ( all_text != nullptr);
 
-    int (*Comparator) ( const void* str_struct_1,
-                        const void* str_struct_2);
+    FILE* output_onegin = FopenWithCheck ( "data/output.txt", "w");
 
-    fprintf( output_onegin, "\n\n[SORTED FROM THE BEGINING]\n\n\n");
-    PrintOnegin ( all_text->sorted_left, output_onegin);
-    printf ("%s", all_text->sorted_left->str_pointer);
+    fprintf ( output_onegin, "\n\n[SORTED FROM THE BEGINING]\n\n\n");
+    PrintOnegin ( all_text->sorted_left, output_onegin, all_text->num_str);
 
-    fprintf( output_onegin, "\n\n[SORTED FROM THE END]\n\n\n");
-    PrintOnegin ( all_text->sorted_right, output_onegin);
-    printf ("%s", all_text->sorted_left->str_pointer);
+    fprintf ( output_onegin, "\n\n[SORTED FROM THE END]\n\n\n");
+    PrintOnegin ( all_text->sorted_right, output_onegin, all_text->num_str);
 
-    fprintf( output_onegin, "\n\n[ORIGINAL TEXT]\n\n\n");
-    PrintOnegin ( all_text->str_info, output_onegin);
+    fprintf ( output_onegin, "\n\n[ORIGINAL TEXT]\n\n\n");
+    PrintOnegin ( all_text->str_info, output_onegin, all_text->num_str);
 
 }

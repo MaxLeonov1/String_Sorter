@@ -3,6 +3,8 @@
 #include <string.h>
 #include <assert.h>
 
+/*-----------------------------------------------------------------------------------------------*/
+
 #include "supporting_functions.h"
 #include "print_sys_message.h"
 #include "colors.h"
@@ -54,38 +56,6 @@ void FreeText ( Text* all_text) {
     free ( all_text->sorted_left);
     free ( all_text->sorted_right);
     free ( all_text->standart_buffer);
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-void* CallocWithCheck ( size_t num_elements, size_t size_element) {
-
-    void* alloc_mem_pointer = calloc ( num_elements, size_element);
-
-    if ( alloc_mem_pointer == nullptr) {
-
-        MemAloccErrorPrint(); 
-        exit(0);
-
-    }
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-FILE* FopenWithCheck ( const char* file_name, const char* mode) {
-
-    assert ( (file_name != nullptr) && (mode != nullptr));
-
-    FILE* file_pointer = fopen ( file_name, mode);
-
-    if ( file_pointer == nullptr) {
-
-        FileOpenErrorPrint();
-        exit(0);
-
-    }
 
 }
 

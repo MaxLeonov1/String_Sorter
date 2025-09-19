@@ -3,28 +3,35 @@
 #include <string.h>
 #include <assert.h>
 
+/*-----------------------------------------------------------------------------------------------*/
+
 #include "input_output_text.h"
 #include "structs.h"
 #include "supporting_functions.h"
 #include "sort_functions.h"
+#include "enum.h"
 
 /*-----------------------------------------------------------------------------------------------*/
 
-StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
+ErrorCode ScanOnegin ( const char* file_name, Text* all_text) {
 
     assert ( (file_name != nullptr) && (all_text != nullptr));
 
-    FILE*      onegin_file     = FopenWithCheck ( file_name, "r");
+    FILE* onegin_file = fopen ( file_name, "rb");
+    if ( onegin_file == nullptr ) return FILE_OPEN_ERROR;
+
     all_text->aprox_symbol_num = FileCharCount ( onegin_file);
+
     int   num_str         = 1;
     char* str_terminator  = nullptr;
     char* str_pointer     = nullptr;
     char* text_buffer     = nullptr;
     
-    all_text->standart_buffer = (char*) CallocWithCheck ( all_text->aprox_symbol_num, sizeof(char));
+    all_text->standart_buffer = (char*) calloc ( all_text->aprox_symbol_num, sizeof(char));
+    if ( all_text->standart_buffer == nullptr) return MEMORY_ALLOCATE_ERROR;
 
-    fread( all_text->standart_buffer, sizeof(char), all_text->aprox_symbol_num, onegin_file);
-    fclose( onegin_file);
+    fread ( all_text->standart_buffer, sizeof(char), all_text->aprox_symbol_num, onegin_file);
+    fclose ( onegin_file);
 
     str_pointer = all_text->standart_buffer;
 
@@ -44,7 +51,8 @@ StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
     all_text->num_str = num_str;
     str_pointer = all_text->standart_buffer;
 
-    all_text->str_info = (StrInfo*) CallocWithCheck ( num_str + 1, sizeof(StrInfo));
+    all_text->str_info = (StrInfo*) calloc ( num_str + 1, sizeof(StrInfo));
+    if ( all_text->standart_buffer == nullptr) return MEMORY_ALLOCATE_ERROR;
 
     for (int str_ind = 0; str_ind < num_str; str_ind++) {
         
@@ -60,8 +68,7 @@ StrInfo* ScanOnegin ( const char* file_name, Text* all_text) {
 
     }
 
-    // printf("%p %p\n", text_buffer, *text_buffer_point);
-    return all_text->str_info;
+    return SUCCSESFUL;
 
 }
 
@@ -76,7 +83,7 @@ void PrintOnegin ( StrInfo* struct_arr, FILE* output_onegin, long int num_str) {
           struct_ind++ ) {
 
         //printf ( "%s\n", struct_arr[struct_ind].str_pointer);
-        fprintf( output_onegin, "%s\n", struct_arr[struct_ind].str_pointer);
+        fprintf( output_onegin, "%s", struct_arr[struct_ind].str_pointer);
 
     }
 
@@ -84,11 +91,12 @@ void PrintOnegin ( StrInfo* struct_arr, FILE* output_onegin, long int num_str) {
 
 /*-----------------------------------------------------------------------------------------------*/
 
-void OutputOnegin ( Text* all_text) {
+ErrorCode OutputOnegin ( Text* all_text) {
 
     assert ( all_text != nullptr);
 
-    FILE* output_onegin = FopenWithCheck ( "data/output.txt", "w");
+    FILE* output_onegin = fopen ( "data/output.txt", "w");
+    if ( output_onegin == nullptr ) return FILE_OPEN_ERROR;
 
     fprintf ( output_onegin, "\n\n[SORTED FROM THE BEGINING]\n\n\n");
     PrintOnegin ( all_text->sorted_left, output_onegin, all_text->num_str);
@@ -98,5 +106,7 @@ void OutputOnegin ( Text* all_text) {
 
     fprintf ( output_onegin, "\n\n[ORIGINAL TEXT]\n\n\n");
     PrintOnegin ( all_text->str_info, output_onegin, all_text->num_str);
+
+    return SUCCSESFUL;
 
 }

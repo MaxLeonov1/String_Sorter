@@ -4,39 +4,60 @@
 #include <ctype.h>
 #include <assert.h>
 
+/*-----------------------------------------------------------------------------------------------*/
+
 #include "sort_functions.h"
 #include "supporting_functions.h"
 #include "structs.h"
+#include "enum.h"
 
 /*-----------------------------------------------------------------------------------------------*/
 
-void AllSort ( Text* all_text) {
+ErrorCode AllSort ( Text* all_text, int sort_type) {
 
     assert ( all_text != nullptr);
+
+    ErrorCode local_status = SUCCSESFUL;
 
     int (*Comparator) ( const void* str_struct_1,
                         const void* str_struct_2);
 
-    all_text->sorted_left =  (StrInfo*) CallocWithCheck ( all_text->num_str, sizeof(StrInfo));
-    all_text->sorted_right = (StrInfo*) CallocWithCheck ( all_text->num_str, sizeof(StrInfo));
+    all_text->sorted_left =  (StrInfo*) calloc ( all_text->num_str, sizeof(StrInfo));
+    all_text->sorted_right = (StrInfo*) calloc ( all_text->num_str, sizeof(StrInfo));
+
+    if ( all_text->sorted_left  == nullptr ||
+         all_text->sorted_right == nullptr) return MEMORY_ALLOCATE_ERROR;
 
     StrInfoCopy( all_text);
 
     Comparator = LetfToRightStrCompare;
-    qsort ( all_text->sorted_left, all_text->num_str, sizeof(StrInfo), Comparator);
+
+    if ( sort_type == QUICK_SORT)
+        qsort ( all_text->sorted_left, all_text->num_str, sizeof(StrInfo), Comparator);
+    if ( sort_type == SLOW_BUBLE_SORT)
+        local_status = HandmadeBubleSort ( all_text->sorted_left, all_text->num_str, sizeof(StrInfo), Comparator);
+        if ( local_status != SUCCSESFUL) return local_status;
 
     Comparator = RightToLeftStrCompare;
-    HandmadeBubleSort ( all_text->sorted_right, all_text->num_str, sizeof(StrInfo), Comparator);
+
+    if ( sort_type == QUICK_SORT)
+        qsort ( all_text->sorted_right, all_text->num_str, sizeof(StrInfo), Comparator);
+    if ( sort_type == SLOW_BUBLE_SORT)
+        local_status = HandmadeBubleSort ( all_text->sorted_right, all_text->num_str, sizeof(StrInfo), Comparator);
+        if ( local_status != SUCCSESFUL) return local_status;
+
+    return SUCCSESFUL;
 
 }
 
 /*-----------------------------------------------------------------------------------------------*/
 
-void Swap ( void* element_1, void* element_2, size_t size) {
+ErrorCode Swap ( void* element_1, void* element_2, size_t size) {
 
     assert ( (element_1 != nullptr) && (element_2 != nullptr));
 
-    void* mini_buffer = CallocWithCheck ( 1, size);
+    void* mini_buffer = calloc ( 1, size);
+    if ( mini_buffer == nullptr) return MEMORY_ALLOCATE_ERROR;
 
     memcpy ( mini_buffer, element_1, size);
     memcpy ( element_1, element_2, size);
@@ -44,16 +65,19 @@ void Swap ( void* element_1, void* element_2, size_t size) {
 
     free ( mini_buffer);
 
+    return SUCCSESFUL;
+
 }
 
 /*-----------------------------------------------------------------------------------------------*/
 
-void HandmadeBubleSort ( void *base,
+ErrorCode HandmadeBubleSort ( void *base,
                          size_t num,
                          size_t size,
                          int (*Comparator) (const void *, const void *)) {
 
     assert ( (base != nullptr) && (Comparator != nullptr));
+    ErrorCode local_status = SUCCSESFUL;
 
     for ( size_t ind_1 = 0; ind_1 < num - 1; ind_1++) {
 
@@ -64,7 +88,8 @@ void HandmadeBubleSort ( void *base,
 
             if ( Comparator( element_1, element_2) > 0) {
 
-                Swap ( element_1, element_2, size);
+                local_status = Swap ( element_1, element_2, size);
+                if ( local_status != SUCCSESFUL) return local_status;
 
             }
 

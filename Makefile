@@ -7,11 +7,12 @@ CFLAGS=-c -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-eq
 	   -Wstack-usage=8192 -Wstrict-aliasing -Wstrict-null-sentinel -Wtype-limits \
 	   -Wwrite-strings -Werror=vla -D_DEBUG -D_EJUDGE_CLIENT_SIDE
 
+SOURCES = main.cpp supporting_functions.cpp input_output_text.cpp sort_functions.cpp \
+		  print_sys_message.cpp
+
 LDFLAGS =
 OBJDIR = obj
 CXX = g++
-SOURCES = main.cpp supporting_functions.cpp input_output_text.cpp sort_functions.cpp \
-		  print_sys_message.cpp
 OBJECTS = $(addprefix $(OBJDIR)/, $(SOURCES:.cpp=.o))
 EXECUTABLE = str_func
 

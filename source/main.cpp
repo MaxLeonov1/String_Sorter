@@ -48,10 +48,10 @@ int main ( const int argc, const char* argv[]) {
             SystemStatusHandler ( status, SCAN_PROCESS);
 
             status = AllSort ( &all_text, sort_type);
-            //SystemStatusHandler ( status, SORTING_PROCESS);
+            SystemStatusHandler ( status, SORTING_PROCESS);
 
             status = OutputOnegin ( &all_text);
-            //SystemStatusHandler ( status, OUTPUT_PROCESS);
+            SystemStatusHandler ( status, OUTPUT_PROCESS);
 
             FreeText ( &all_text);
 

@@ -17,7 +17,7 @@ long int FileCharCount ( FILE* stream) {
     assert ( stream != nullptr);
 
     fseek ( stream, 0, SEEK_END);
-    long int file_char_len = ftell (stream); //slightly bigger because of f*cking \r
+    long int file_char_len = ftell (stream); //slightly bigger because of \r
     fseek ( stream, 0, SEEK_SET);
 
     return file_char_len;

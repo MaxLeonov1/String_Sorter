@@ -17,7 +17,7 @@ typedef struct {
     long aprox_symbol_num = 0;
     long num_str = 0;
 
-    char* standart_buffer     = nullptr;
+    char* standart_buffer = nullptr;
 
     StrInfo* sorted_left  = nullptr;
     StrInfo* sorted_right = nullptr;

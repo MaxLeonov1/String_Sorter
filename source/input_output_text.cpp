@@ -18,14 +18,14 @@ ErrorCode ScanOnegin ( const char* file_name, Text* all_text) {
     assert ( (file_name != nullptr) && (all_text != nullptr));
 
     FILE* onegin_file = fopen ( file_name, "rb");
-    if ( onegin_file == nullptr ) return FILE_OPEN_ERROR;
+    if ( onegin_file == nullptr ) return SUCCSESFUL;
 
     all_text->aprox_symbol_num = FileCharCount ( onegin_file);
 
-    int   num_str         = 1;
-    char* str_terminator  = nullptr;
-    char* str_pointer     = nullptr;
-    char* text_buffer     = nullptr;
+    int   num_str        = 1;
+    char* str_terminator = nullptr;
+    char* str_pointer    = nullptr;
+    char* text_buffer    = nullptr;
     
     all_text->standart_buffer = (char*) calloc ( all_text->aprox_symbol_num, sizeof(char));
     if ( all_text->standart_buffer == nullptr) return MEMORY_ALLOCATE_ERROR;

@@ -21,8 +21,8 @@ void SystemStatusHandler ( ErrorCode status, ProcessName process) {
             FileOpenErrorPrint();
             exit(0);
 
-        case SUCCSESFUL:
-            ProcessTypeHandler( process);
+        // case SUCCSESFUL:
+        //     ProcessTypeHandler( process);
 
     }
 
@@ -31,6 +31,8 @@ void SystemStatusHandler ( ErrorCode status, ProcessName process) {
 /*-----------------------------------------------------------------------------------------------*/
 
 void ProcessTypeHandler ( ProcessName process) {
+
+    process = SCAN_PROCESS;
 
     switch ( process) {
 

@@ -11,9 +11,9 @@ typedef enum {
 /*-------------------------------------------------------*/
 typedef enum {
 
-    FILE_OPEN_ERROR = 0,
-    MEMORY_ALLOCATE_ERROR = 1,
-    SUCCSESFUL = 2
+    FILE_OPEN_ERROR = 2,
+    MEMORY_ALLOCATE_ERROR = 3,
+    SUCCSESFUL = 4
 
 } ErrorCode;
 /*-------------------------------------------------------*/

@@ -131,6 +131,7 @@ int LetfToRightStrCompare ( const void* arg_1,
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+//ONLY FUN VERSION
 
 int FenixSort ( const void* arg_1,
                 const void* arg_2) {
